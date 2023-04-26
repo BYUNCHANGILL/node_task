@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 // 게시글을 조회하는 API입니다.
 router.get("/posts", async (req, res) => {
     // posts 컬렉션에 있는 postsId, user, title, createdAt을 조회합니다.
-    const posts = await Posts.find({}, { postsId: 1, user: 1, title: 1, createdAt: 1 }).sort({ createdAt: -1 });;
+    const posts = await Posts.find({}, { _id: 0, postsId: 1, user: 1, title: 1, createdAt: 1 }).sort({ createdAt: -1 });;
     // 조회된 데이터를 클라이언트에게 전달합니다.
     return res.status(200).json({ data: posts });
 });
@@ -38,8 +38,8 @@ router.get("/posts/:_postId", async (req, res) => {
     const { _postId } = req.params;
 
     try {
-        // posts 컬렉션에서 해당 postsId를 가진 도큐먼트를 조회합니다.
-        const post = await Posts.findOne({ postsId: _postId });
+        // posts 컬렉션에 있는 postsId, user, title, content, createdAt을 조회합니다.
+        const post = await Posts.findOne({ postsId: _postId }, { _id: 0, postsId: 1, user: 1, title: 1, content: 1, createdAt: 1 });
         // 조회된 데이터가 없다면 404에러를 반환합니다.
         if (!post) {
             return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
