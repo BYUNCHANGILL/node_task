@@ -7,10 +7,10 @@ const mongoose = require('mongoose');
 
 // 게시글을 조회하는 API입니다.
 router.get("/posts", async (req, res) => {
-    // posts 컬렉션에 있는 모든 데이터를 조회합니다.
-    const posts = await Posts.find({});
+    // posts 컬렉션에 있는 postsId, user, title, createdAt을 조회합니다.
+    const posts = await Posts.find({}, { postsId: 1, user: 1, title: 1, createdAt: 1 }).sort({ createdAt: -1 });;
     // 조회된 데이터를 클라이언트에게 전달합니다.
-    return res.status(200).json({ "data": posts })
+    return res.status(200).json({ data: posts });
 });
 
 // 게시글을 작성하는 API입니다.
@@ -25,7 +25,7 @@ router.post("/posts", async (req, res) => {
     // ObjectId를 사용하여 postsId를 생성합니다.
     const postsId = new mongoose.Types.ObjectId();
     // 새로운 도큐먼트를 생성합니다.
-    const newPost = { user, password, title, content, postsId };
+    const newPost = { user, password, title, content, postsId, createdAt: new Date() };
     // posts 컬렉션에 새로운 도큐먼트를 추가합니다.
     await Posts.create(newPost);
     // 저장된 데이터를 클라이언트에게 전달합니다.
