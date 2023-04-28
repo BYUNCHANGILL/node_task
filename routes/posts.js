@@ -21,7 +21,6 @@ router.post("/posts", async (req, res) => {
     if (!user || !password || !title || !content) {
         return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." })
     }
-
     // ObjectId를 사용하여 postsId를 생성합니다.
     const postsId = new mongoose.Types.ObjectId();
     // 새로운 도큐먼트를 생성합니다.
@@ -63,15 +62,23 @@ router.put("/posts/:_postId", async (req, res) => {
 
     try {
         // posts 컬렉션에서 해당 postsId를 가진 도큐먼트를 조회합니다.
-        const post = await Posts.findOne({ postsId: _postId });
+        const post_id = await Posts.findOne({ postsId: _postId });
         // 조회된 데이터가 없다면 404에러를 반환합니다.
-        if (!post) {
+        if (!post_id) {
             return res.status(404).json({ message: "게시글 조회에 실패하였습니다." });
         }
-        // 수정된 데이터를 저장합니다.
-        await Posts.updateOne({ postsId: _postId }, { password, title, content });
-        // 수정된 데이터를 클라이언트에게 전달합니다.
-        return res.status(200).json({ message: "게시글을 수정하였습니다." });
+        // 조회된 데이터에서 password를 가져옵니다.
+        const post_password = post_id.password;
+        // 조회된 데이터가 있다면 수정합니다.
+        if (post_password === password) {
+            // 수정된 데이터를 저장합니다.
+            await Posts.updateOne({ postsId: _postId }, { title, content });
+            // 수정된 데이터를 클라이언트에게 전달합니다.
+            return res.status(200).json({ message: "게시글을 수정하였습니다." });
+        } else {
+            // 비밀번호가 일치하지 않는다면 400에러를 반환합니다.
+            return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
+        }
     } catch (error) {
     }
 });
@@ -93,7 +100,7 @@ router.delete("/posts/:_postId", async (req, res) => {
         if (post.password !== password) {
             return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
         }
-        // 삭제된 데이터를 저장합니다.
+        // 데이테 삭제를 합니다.
         await Posts.deleteOne({ postsId: _postId, password });
         // 삭제된 데이터를 클라이언트에게 전달합니다.
         return res.status(200).json({ message: "게시글을 삭제하였습니다." });
