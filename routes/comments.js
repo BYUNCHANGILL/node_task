@@ -25,6 +25,8 @@ router.post("/posts/:_postId/comments", async (req, res) => {
     } else if (!content) {
         return res.status(400).json({ message: "댓글 내용을 입력해주세요." })
     }
+    // 댓글의 고유 아이디를 생성합니다.
+    const commentId = new mongoose.Types.ObjectId();
 
     // 새로운 도큐먼트를 생성합니다.
     const newComment = { user, password, content, commentId,  postsId: _postId, createdAt: new Date() };
