@@ -6,14 +6,10 @@ const postsSchema = new mongoose.Schema({
         required: true,
         unique: true, 
     },
-    user: {
+    userId: {
         type: String,
         required: true,
         unique: true
-    },
-    password: {
-        type: String,
-        required: true
     },
     title: {
         type: String,
@@ -24,6 +20,9 @@ const postsSchema = new mongoose.Schema({
         required: true
     },
     createdAt: {
+        type: Date
+    },
+    updatedAt: {
         type: Date
     }
 });

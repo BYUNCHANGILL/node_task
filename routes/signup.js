@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../schemas/user");
+const mongoose = require('mongoose');
 
 // 회원가입 API
 router.post('/singup', async (req, res) => {
@@ -54,8 +55,10 @@ router.post('/singup', async (req, res) => {
             return;
         }
 
+        // ObjectId를 사용하여 UserId 생성합니다.
+        const userId = new mongoose.Types.ObjectId(); 
         // TODO : 비밀번호 암호화 하기 crypto 라이브러리 사용해서 나중에 하기
-        const user = new User({ nickname, password });
+        const user = new User({ userId, nickname, password });
         await user.save();
 
         return res.status(201).json({"message": "회원가입에 성공하였습니다."});

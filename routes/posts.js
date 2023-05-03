@@ -1,30 +1,39 @@
 const express = require('express');
-const router = express.Router();
 
 // posts.js에서는 posts라는 컬렉션에 대한 CRUD를 구현합니다.
 const Posts = require("../schemas/post.js");
+const authMiddleware = require('../middlewares/auth-middleware.js');
 const mongoose = require('mongoose');
 
-// 게시글을 조회하는 API입니다.
+const router = express.Router();
+
+// 게시글을 전체 목록 조회하는 API입니다.
 router.get("/posts", async (req, res) => {
+    try {
     // posts 컬렉션에 있는 postsId, user, title, createdAt을 조회합니다.
-    const posts = await Posts.find({}, { _id: 0, postsId: 1, user: 1, title: 1, createdAt: 1 }).sort({ createdAt: -1 });;
+    const posts = await Posts.find({}, { _id: 0, postsId: 1, userId: 1, nickname: 1, title: 1, createdAt: 1, updatedAt: 1 }).sort({ createdAt: -1 });;
     // 조회된 데이터를 클라이언트에게 전달합니다.
-    return res.status(200).json({ data: posts });
+    return res.status(200).json({ posts: posts });
+    } catch (err) {
+        console.log(err);
+        return res.status(400).json({ errorMessage: "게시글 조회에 실패하였습니다." });
+    }
 });
 
 // 게시글을 작성하는 API입니다.
-router.post("/posts", async (req, res) => {
-    // user, password, title, content를 받아옵니다.
-    const { user, password, title, content } = req.body;
+router.post("/posts", authMiddleware, async (req, res) => {
+    // authMiddleware를 통과하였다면, req.user에는 유저 정보가 담겨있습니다.
+    const { userId } = res.locals.user;
+    // title, content를 받아옵니다.
+    const { title, content } = req.body;
     // 받아온 데이터가 없다면 400에러를 반환합니다.
-    if (!user || !password || !title || !content) {
+    if (!title || !content) {
         return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." })
     }
-    // ObjectId를 사용하여 postsId를 생성합니다.
-    const postsId = new mongoose.Types.ObjectId();
+    // ObjectId를 사용하여 postId 생성합니다.
+    const postId = new mongoose.Types.ObjectId();
     // 새로운 도큐먼트를 생성합니다.
-    const newPost = { user, password, title, content, postsId, createdAt: new Date() };
+    const newPost = { postId, UserId: userId, title, content, createdAt: new Date() };
     // posts 컬렉션에 새로운 도큐먼트를 추가합니다.
     await Posts.create(newPost);
     // 저장된 데이터를 클라이언트에게 전달합니다.

@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
+    userId: {
+        type: String,
+        required: true, // 필수
+        unique: true,   // 고유한 값
+    },
     nickname: {
         type: String,
         required: true, // 필수
@@ -9,10 +14,16 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true, // 필수
+    },
+    createdAt: {
+        type: Date,
+    },
+    updatedAt: {
+        type: Date,
     }
 });
 
-UserSchema.virtual('userId').get(function () {
+UserSchema.virtual('userIDString').get(function () {
     return this._id.toHexString();
 });
 
