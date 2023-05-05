@@ -4,12 +4,15 @@ const postsSchema = new mongoose.Schema({
     postsId: { 
         type: String,
         required: true,
-        unique: true, 
+        unique: true,   // 고유한 값
     },
     userId: {
         type: String,
         required: true,
-        unique: true
+    },
+    nickname: {
+        type: String,
+        required: true,
     },
     title: {
         type: String,

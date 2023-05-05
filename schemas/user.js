@@ -1,34 +1,28 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-    userId: {
+    nickname:{
         type: String,
-        required: true, // 필수
-        unique: true,   // 고유한 값
+        required: true,
+        unique: true,
     },
-    nickname: {
+    password:{
         type: String,
-        required: true, // 필수
-        unique: true,   // 고유한 값
+        required: true,
     },
-    password: {
+    confirm:{
         type: String,
-        required: true, // 필수
-    },
-    createdAt: {
-        type: Date,
-    },
-    updatedAt: {
-        type: Date,
+        required: true,
     }
+
 });
 
-UserSchema.virtual('userIDString').get(function () {
+UserSchema.virtual("userId").get(function() {
     return this._id.toHexString();
 });
 
-UserSchema.set('toJSON', {
-    virtuals: true, // JSON 형태로 가공할 때, userId를 출력 시켜준다.
-});
+UserSchema.set("toJSON", {
+    virtuals:true, 
+})
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model("User", UserSchema);
