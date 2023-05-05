@@ -2,7 +2,6 @@ const express = require('express');
 
 // posts.js에서는 posts라는 컬렉션에 대한 CRUD를 구현합니다.
 const Posts = require("../schemas/post.js");
-const User = require("../schemas/user.js");
 const authMiddleware = require('../middlewares/auth-middleware.js');
 const mongoose = require('mongoose');
 
@@ -149,7 +148,7 @@ router.delete("/posts/:postId", authMiddleware, async (req, res) => {
     if (req.cookies.refreshToken) {
         return res.status(403).json({ errorMessage: "전달된 쿠키에서 오류가 발생하였습니다." });
     }
-    
+
     try {
         // 데이테 삭제를 합니다.
         await Posts.deleteOne({ postsId: postId });

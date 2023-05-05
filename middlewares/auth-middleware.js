@@ -18,8 +18,8 @@ module.exports = async (req, res, next) => {
         // authToken을 검증하여 userId를 추출합니다.
         const { userId } = jwt.verify(authToken, "customized-secret-key");
         // userId를 사용하여 사용자 정보를 찾습니다.
-        const user = await User.findById(userId);
-        
+        // const user = await User.findById(userId);
+        const user = await User.findOne({ userId });
         // 찾은 사용자 정보를 응답의 locals 객체에 저장합니다.
         res.locals.user = user;
         // 다음 미들웨어로 이동합니다.
