@@ -3,13 +3,18 @@ const User = require("../schemas/user");
 
 module.exports = async (req, res, next) => {
     const { Authorization } = req.cookies;
+
+    if (!Authorization) {
+        res.status(403).json({  errorMessage: "로그인이 필요한 기능입니다." });
+        return;
+    }
     // authorization이 없다면 빈 문자열로 처리하고, 공백을 기준으로 나눠 authyType과 authToken을 추출합니다.
     const [authyType, authToken] = (Authorization ?? "").split(" ");
 
     // authyType이 "Bearer"가 아니거나 authToken이 없다면, 로그인 요청을 하라는 메시지와 함께 오류 응답을 보냅니다.
     if (authyType !== "Bearer" || !authToken) {
         res.status(400).json({
-            errorMessage: "로그인 후 사용하세요.",
+            errorMessage: "전달된 쿠키에서 오류가 발생하였습니다.",
         });
         return;
     }

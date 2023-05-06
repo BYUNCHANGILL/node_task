@@ -37,15 +37,6 @@ router.post("/posts", authMiddleware, async (req, res) => {
         return res.status(400).json({ errorMessage: "게시글 내용의 형식이 일치하지 않습니다." });
     }
 
-    // cookies가 존재하지 않는다면 401에러를 반환합니다.
-    if (!req.cookies) {
-        return res.status(401).json({ errorMessage: "로그인이 필요한 기능입니다." });
-    }
-    // cookies가 비정상적이거나 만료된 경우
-    if (req.cookies.refreshToken) {
-        return res.status(401).json({ errorMessage: "전달된 쿠키에서 오류가 발생하였습니다." });
-    }
-
     try {
         const postsId = new mongoose.Types.ObjectId();
         const newPost = { userId: userId, postsId: postsId, nickname: nickname, title, content, createdAt: new Date(), updatedAt: new Date()};
@@ -102,16 +93,6 @@ router.put("/posts/:postId", authMiddleware, async (req, res) => {
         return res.status(403).json({ errorMessage: "게시글 수정의 권한이 존재하지 않습니다." });
     }
 
-    // cookies가 존재하지 않는 경우
-    if (!req.cookies) {
-        return res.status(403).json({ errorMessage: "로그인이 필요한 기능입니다." });
-    }
-
-    // cookies가 비정상적이거나 만료된 경우
-    if (req.cookies.refreshToken) {
-        return res.status(403).json({ errorMessage: "전달된 쿠키에서 오류가 발생하였습니다." });
-    }
-
     try {
         // 수정된 데이터를 저장합니다.
         await Posts.updateOne({ postsId: postId }, {$set: { title, content, updatedAt: new Date() }});
@@ -139,14 +120,6 @@ router.delete("/posts/:postId", authMiddleware, async (req, res) => {
     // 게시글 삭제 권한이 없는 경우
     if (userId !== post.userId) {
         return res.status(403).json({ errorMessage: "게시글 삭제의 권한이 존재하지 않습니다." });
-    }
-    // cookies가 존재하지 않는 경우
-    if (!req.cookies) {
-        return res.status(403).json({ errorMessage: "로그인이 필요한 기능입니다." });
-    }
-    // cookies가 비정상적이거나 만료된 경우
-    if (req.cookies.refreshToken) {
-        return res.status(403).json({ errorMessage: "전달된 쿠키에서 오류가 발생하였습니다." });
     }
 
     try {
