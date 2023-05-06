@@ -35,14 +35,6 @@ router.post("/posts/:postId/comments", authMiddleware, async (req, res) => {
     if (!postId) {
         return res.status(400).json({ message: "게시글이 존재하지 않습니다." })
     }
-    // 로그인이 되어있지 않은 경우
-    if (!userId) {
-        return res.status(400).json({ message: "로그인이 필요합니다." })
-    }
-    // cookie가 비정상적이거나 만료된 경우
-    if (req.cookies.refreshToken) {
-        return res.status(400).json({ message: "전달된 쿠키에서 오류가 발생하였습니다." })
-    }
     // 데이터가 정상적으로 전달되지 않은 경우
     if (!comment) {
         return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." })
@@ -76,14 +68,7 @@ router.put("/posts/:postId/comments/:commentId", authMiddleware, async (req, res
     if (!userId) {
         return res.status(400).json({ message: "댓글의 수정 권한이 존재하지 않습니다." })
     }
-    // 로그인이 되어있지 않은 경우
-    if (!userId) {
-        return res.status(400).json({ message: "로그인이 필요합니다." })
-    }
-    // cookie가 비정상적이거나 만료된 경우
-    if (req.cookies.refreshToken) {
-        return res.status(400).json({ message: "전달된 쿠키에서 오류가 발생하였습니다." })
-    }
+
     // 데이터가 정상적으로 전달되지 않은 경우
     if (!comment || !commentId) {
         return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." })
@@ -107,14 +92,7 @@ router.delete("/posts/:postId/comments/:commentId", authMiddleware, async (req, 
     if (!postId) {
         return res.status(400).json({ errorMessage: "게시글이 존재하지 않습니다." })
     }
-    // 로그인이 되어있지 않은 경우
-    if (!userId) {
-        return res.status(400).json({ errorMessage: "댓글의 삭제 권한이 존재하지 않습니다." })
-    }
-    // cookie가 비정상적이거나 만료된 경우
-    if (req.cookies.refreshToken) {
-        return res.status(400).json({ errorMessage: "전달된 쿠키에서 오류가 발생하였습니다." })
-    }
+
     // 댓글이 존재하지 않는 경우
     if (!commentId) {
         return res.status(400).json({ errorMessage: "댓글이 존재하지 않습니다." })
